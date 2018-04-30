@@ -13,13 +13,21 @@ router.get('/', (req, res, next) => {
 router.post('/', (req, res, next) => {
   const order = new Order({
     _id: new mongoose.Types.ObjectId(),
-    productId: req.body.productId,
-    quantity: req.body.quantity
+    quantity: req.body.quantity,
+    product: req.body.productId
   })
-  res.status(201).json({
-    message: 'Order was created',
-    order: order
-  });
+  order
+    .save()
+    .then(result => {
+      console.log(result);
+      res.status(201).json(result);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      })
+    })
 })
 
 router.get('/:orderId', (req, res, next) => {
