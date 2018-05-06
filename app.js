@@ -12,7 +12,7 @@ process.env.MONGO_ATLAS_PW +
 '@cluster0-shard-00-00-f6z9j.mongodb.net:27017,cluster0-shard-00-01-f6z9j.mongodb.net:27017,cluster0-shard-00-02-f6z9j.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin')
 
 
-mongoose.Promise = global.Promise;
+// mongoose.Promise = global.Promise;
  /* Test out the server connection
 app.use((req, res, next) => {
   res.status(200).json({

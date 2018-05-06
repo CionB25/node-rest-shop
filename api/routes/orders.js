@@ -8,6 +8,7 @@ const Product = require('../models/product')
 router.get('/', (req, res, next) => {
   Order.find()
   .select('product quantity _id')
+  .populate('product', 'name')
   .exec()
   .then(docs => {
     res.status(200).json({
@@ -35,39 +36,38 @@ router.get('/', (req, res, next) => {
 router.post('/', (req, res, next) => {
   Product.findById(req.body.productId)
     .then(product => {
+      console.log(product);
+      if (!product) {
+        return res.status(404).json({
+          message: 'Product not found'
+        })
+      }
       const order = new Order({
         _id: new mongoose.Types.ObjectId(),
         quantity: req.body.quantity,
         product: req.body.productId
       })
-      order
+      return order
       .save()
-      .then(result => {
-        console.log(result);
-        res.status(201).json({
-          message: 'Order stored',
-          createdOrder: {
-            _id: result._id,
-            product: result.product,
-            quantity: result.quantity
-          },
-          request: {
-            type: 'GET',
-            url: 'http://localhost:3000/orders/' + result._id
-          }
-        });
-      })
-      .catch(err => {
-        console.log(err);
-        res.status(500).json({
-          error: err
-        })
-      })
-
+    })
+    .then(result => {
+      // console.log(result);
+      res.status(201).json({
+        message: 'Order stored',
+        createdOrder: {
+          _id: result._id,
+          product: result.product,
+          quantity: result.quantity
+        },
+        request: {
+          type: 'GET',
+          url: 'http://localhost:3000/orders/' + result._id
+        }
+      });
     })
     .catch(err => {
+      console.log(err);
       res.status(500).json({
-        message: 'Product not found',
         error: err
       })
     })
